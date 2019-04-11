@@ -57,7 +57,7 @@ public class MessageContractImpl implements MessageContract {
                 message.setField(def, def.decode(buffer));
                 nextTag = buffer.getInt();
             } else if (!def.isOptional()) {
-                throw new CodecException("Field Not Found: " + def, message);
+                throw new CodecException("Field Not Found In Message: " + def + " Found Tag " + nextTag + " instead.", message);
             }
         }
 
@@ -71,8 +71,8 @@ public class MessageContractImpl implements MessageContract {
             Collection<Message> subMessages = message.getGroup(messageDef);
             while(nextTag == messageDef.getTag()) {
                 subMessages.add(contract.decode(buffer));
+                nextTag = buffer.getInt();
             }
-            nextTag = buffer.getInt();
             if (subMessages.isEmpty() && !messageDef.isOptional()) {
                 throw new CodecException("Group Not Found In Message: " + messageDef, message);
             }

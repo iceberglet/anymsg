@@ -6,9 +6,16 @@ public abstract class BaseDef {
 
     final boolean isOptional;
 
-    BaseDef(int tag, boolean isOptional) {
+    final String name;
+
+    public BaseDef(int tag, boolean isOptional, String name) {
         this.tag = tag;
         this.isOptional = isOptional;
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public int getTag() {

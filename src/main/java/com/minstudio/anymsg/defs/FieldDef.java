@@ -6,8 +6,8 @@ public abstract class FieldDef<P> extends BaseDef {
 
     private final Class<P> fieldType;
 
-    public FieldDef(int fieldTag, boolean isOptional, Class<P> fieldType) {
-        super(fieldTag, isOptional);
+    public FieldDef(String name, int fieldTag, boolean isOptional, Class<P> fieldType) {
+        super(fieldTag, isOptional, name);
         this.fieldType = fieldType;
     }
 
@@ -48,7 +48,8 @@ public abstract class FieldDef<P> extends BaseDef {
     public final String toString() {
         return this.getClass().getSimpleName() +
                 "{" +
-                "fieldType=" + fieldType +
+                "name=" + name +
+                ", fieldType=" + fieldType +
                 ", tag=" + tag +
                 ", isOptional=" + isOptional +
                 '}';

@@ -4,8 +4,8 @@ import java.nio.ByteBuffer;
 
 public class StringDef extends FieldDef<String> {
 
-    public StringDef(int fieldTag, boolean isOptional) {
-        super(fieldTag, isOptional, String.class);
+    public StringDef(String name, int fieldTag, boolean isOptional) {
+        super(name, fieldTag, isOptional, String.class);
     }
 
     @Override

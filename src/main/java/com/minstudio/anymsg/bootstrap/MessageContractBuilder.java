@@ -24,6 +24,10 @@ public interface MessageContractBuilder {
      */
     MessageContractBuilder doneGroupDef();
 
+    /**
+     * Build the message.
+     * @return contract built
+     */
     MessageContract build();
 
 }

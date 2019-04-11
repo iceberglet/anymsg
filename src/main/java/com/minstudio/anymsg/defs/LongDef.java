@@ -4,8 +4,8 @@ import java.nio.ByteBuffer;
 
 public class LongDef extends FieldDef<Long> {
 
-    public LongDef(int fieldTag, boolean isOptional) {
-        super(fieldTag, isOptional, Long.class);
+    public LongDef(String name, int fieldTag, boolean isOptional) {
+        super(name, fieldTag, isOptional, Long.class);
     }
 
     @Override
