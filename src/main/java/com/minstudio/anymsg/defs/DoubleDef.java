@@ -1,20 +1,11 @@
 package com.minstudio.anymsg.defs;
 
-import java.nio.ByteBuffer;
+import com.minstudio.anymsg.codec.DoubleCodec;
 
 public class DoubleDef extends FieldDef<Double> {
 
     public DoubleDef(String name, int fieldTag, boolean isOptional) {
-        super(name, fieldTag, isOptional, Double.class);
+        super(name, fieldTag, isOptional, new DoubleCodec());
     }
 
-    @Override
-    public Double decode(ByteBuffer buffer) {
-        return buffer.getDouble();
-    }
-
-    @Override
-    public void encode(ByteBuffer buffer, Double item) {
-        buffer.putDouble(item);
-    }
 }

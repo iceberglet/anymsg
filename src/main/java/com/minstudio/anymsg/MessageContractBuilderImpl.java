@@ -1,4 +1,4 @@
-package com.minstudio.anymsg.impl;
+package com.minstudio.anymsg;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -8,11 +8,12 @@ import java.util.stream.Collectors;
 
 import com.minstudio.anymsg.bootstrap.MessageContract;
 import com.minstudio.anymsg.bootstrap.MessageContractBuilder;
+import com.minstudio.anymsg.defs.BaseDef;
 import com.minstudio.anymsg.defs.FieldDef;
 import com.minstudio.anymsg.defs.MessageDef;
 import com.minstudio.anymsg.exceptions.DefinitionException;
 
-public class MessageContractBuilderImpl implements MessageContractBuilder {
+class MessageContractBuilderImpl implements MessageContractBuilder {
 
     private final MessageContractBuilder parent;
     private final List<FieldDef> fieldDefs;
@@ -20,12 +21,16 @@ public class MessageContractBuilderImpl implements MessageContractBuilder {
     private final MessageDef myMessageDef;
     private final int layer;
 
-    public MessageContractBuilderImpl(MessageContractBuilder parent,
+    private final Set<Integer> addedTags;
+    private final Set<String> addedNames;
+
+
+    MessageContractBuilderImpl(MessageContractBuilder parent,
                                       MessageDef myMessageDef) {
         this(parent, myMessageDef, 0);
     }
 
-    MessageContractBuilderImpl(MessageContractBuilder parent,
+    private MessageContractBuilderImpl(MessageContractBuilder parent,
                                MessageDef myMessageDef,
                                int layer) {
         this.parent = parent;
@@ -33,16 +38,20 @@ public class MessageContractBuilderImpl implements MessageContractBuilder {
         this.subMsgContracts = new HashSet<>();
         this.myMessageDef = myMessageDef;
         this.layer = layer;
+        this.addedTags = new HashSet<>();
+        this.addedNames = new HashSet<>();
     }
 
     @Override
     public MessageContractBuilder addFieldDef(FieldDef<?> fieldDef) {
+        checkForDuplicate(fieldDef);
         fieldDefs.add(fieldDef);
         return this;
     }
 
     @Override
     public MessageContractBuilder addSubMessageDef(MessageDef messageDef) {
+        checkForDuplicate(messageDef);
         MessageContractBuilderImpl subBuilder = new MessageContractBuilderImpl(this, messageDef, this.layer + 1);
         subMsgContracts.add(subBuilder);
         return subBuilder;
@@ -69,5 +78,14 @@ public class MessageContractBuilderImpl implements MessageContractBuilder {
         return new MessageContractImpl(fieldDefs,
                 subMsgContracts.stream().map(MessageContractBuilderImpl::doBuild).collect(Collectors.toList()),
                 myMessageDef);
+    }
+
+    private void checkForDuplicate(BaseDef baseDef) {
+        if(!addedNames.add(baseDef.getName())) {
+            throw new DefinitionException("Field/Group Name Already Defined in Message: " + baseDef);
+        }
+        if(!addedTags.add(baseDef.getTag())) {
+            throw new DefinitionException("Field/Group Tag Already Defined in Message: " + baseDef);
+        }
     }
 }

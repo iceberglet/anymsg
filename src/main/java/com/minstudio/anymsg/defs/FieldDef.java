@@ -2,46 +2,29 @@ package com.minstudio.anymsg.defs;
 
 import java.nio.ByteBuffer;
 
-public abstract class FieldDef<P> extends BaseDef {
+import com.minstudio.anymsg.codec.Codec;
 
-    private final Class<P> fieldType;
+public class FieldDef<P> extends BaseDef implements Codec<P> {
 
-    public FieldDef(String name, int fieldTag, boolean isOptional, Class<P> fieldType) {
+    private final Codec<P> codec;
+
+    public FieldDef(String name, int fieldTag, boolean isOptional, Codec<P> codec) {
         super(fieldTag, isOptional, name);
-        this.fieldType = fieldType;
+        this.codec = codec;
     }
 
-    public final Class<P> getFieldType() {
-        return fieldType;
-    }
-
-    /**
-     * Decodes the item. The buffer will be read further
-     * @param buffer the buffer
-     * @return the item decoded
-     */
-    public abstract P decode(ByteBuffer buffer);
-
-    /**
-     * encodes the item into buffer
-     * @param buffer buffer to encode into
-     */
-    public abstract void encode(ByteBuffer buffer, P item);
-
-    @Override
-    public final int hashCode() {
-        return Integer.hashCode(this.tag);
+    public final Class<P> getType() {
+        return codec.getType();
     }
 
     @Override
-    public final boolean equals(Object obj) {
-        if(obj == this) {
-            return true;
-        }
-        if(obj instanceof FieldDef) {
-            return this.tag == ((FieldDef) obj).tag;
-        }
-        return false;
+    public P decode(ByteBuffer buffer) {
+        return codec.decode(buffer);
+    }
+
+    @Override
+    public void encode(ByteBuffer buffer, P item) {
+        codec.encode(buffer, item);
     }
 
     @Override
@@ -49,7 +32,7 @@ public abstract class FieldDef<P> extends BaseDef {
         return this.getClass().getSimpleName() +
                 "{" +
                 "name=" + name +
-                ", fieldType=" + fieldType +
+                ", fieldType=" + codec.getType() +
                 ", tag=" + tag +
                 ", isOptional=" + isOptional +
                 '}';

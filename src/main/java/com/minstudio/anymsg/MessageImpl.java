@@ -1,4 +1,4 @@
-package com.minstudio.anymsg.impl;
+package com.minstudio.anymsg;
 
 import java.util.ArrayList;
 import java.util.Collection;

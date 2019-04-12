@@ -1,6 +1,6 @@
-package com.minstudio.anymsg.impl;
+package com.minstudio.anymsg;
 
-public class Constants {
+class Constants {
 
 //    public static final int SIZE_INT = 4;
 //    public static final int SIZE_LONG = 8;
@@ -9,6 +9,6 @@ public class Constants {
     /**
      * Marks the end of a message!
      */
-    public static final int END_OF_MESSAGE = -1;
+    static final int END_OF_MESSAGE = -1;
 
 }

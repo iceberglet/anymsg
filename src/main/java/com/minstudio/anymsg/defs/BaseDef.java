@@ -25,4 +25,20 @@ public abstract class BaseDef {
     public boolean isOptional() {
         return isOptional;
     }
+
+    @Override
+    public final int hashCode() {
+        return Integer.hashCode(this.tag);
+    }
+
+    @Override
+    public final boolean equals(Object obj) {
+        if(obj == this) {
+            return true;
+        }
+        if(obj instanceof FieldDef) {
+            return this.tag == ((FieldDef) obj).tag;
+        }
+        return false;
+    }
 }

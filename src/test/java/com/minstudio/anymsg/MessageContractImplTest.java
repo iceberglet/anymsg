@@ -1,4 +1,4 @@
-package com.minstudio.anymsg.impl;
+package com.minstudio.anymsg;
 
 import static org.junit.Assert.*;
 
@@ -10,6 +10,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.minstudio.anymsg.Message;
+import com.minstudio.anymsg.MessageContractBuilderImpl;
+import com.minstudio.anymsg.MessageImpl;
 import com.minstudio.anymsg.bootstrap.MessageContract;
 import com.minstudio.anymsg.defs.DoubleDef;
 import com.minstudio.anymsg.defs.LongDef;
@@ -179,18 +181,16 @@ public class MessageContractImplTest {
         assertEquals(4500L, (long)after.getField(TRANSACTION_TIME));
     }
 
-    @Test(expected = CodecException.class)
+    @Test
     public void test_no_def_found_for_field_when_encoding() {
-        //todo: this test does not work yet,
-        //todo: because there is no enforcing that all fields in Message must be encoded
-        //todo: this should be a setting/context/behaviour to toggle
         contract = new MessageContractBuilderImpl(null, EXECUTION_REPORT)
                 .addFieldDef(CLIENT_ORDER_ID)
                 .build();
         Message before = new MessageImpl();
         before.setField(CLIENT_ORDER_ID, "Cl#234523");
         before.setField(EXEC_ID, "Exec#242134");
-        getAround(before);
+        Message after = getAround(before);
+        assertNull(after.getField(EXEC_ID));
     }
 
     @Test(expected = CodecException.class)
@@ -236,11 +236,8 @@ public class MessageContractImplTest {
         assertEquals("Cl#234523", after.getField(CLIENT_ORDER_ID));
     }
 
-    @Test(expected = CodecException.class)
+    @Test
     public void test_no_def_found_for_group_when_encoding() {
-        //todo: this test does not work yet,
-        //todo: because there is no enforcing that all fields in Message must be encoded
-        //todo: this should be a setting/context/behaviour to toggle
         contract = new MessageContractBuilderImpl(null, EXECUTION_REPORT)
                 .addFieldDef(CLIENT_ORDER_ID)
                 .build();
@@ -250,7 +247,8 @@ public class MessageContractImplTest {
         a.setField(AVG_PX, 1_000_000D);
         before.getGroup(REPORT_LEG).add(a);
 
-        getAround(before);
+        Message after = getAround(before);
+        assertEquals(0, after.getGroup(REPORT_LEG).size());
     }
 
     @Test(expected = CodecException.class)

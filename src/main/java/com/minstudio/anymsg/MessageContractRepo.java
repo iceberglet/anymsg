@@ -6,13 +6,13 @@ import com.minstudio.anymsg.bootstrap.MessageContract;
 import com.minstudio.anymsg.bootstrap.MessageContractBuilder;
 import com.minstudio.anymsg.defs.MessageDef;
 
-public interface MessageContractRepo {
+interface MessageContractRepo {
 
-    MessageContractBuilder defineNewMessage(int messageType);
+    MessageContractBuilder defineMessage(MessageDef messageDef);
 
     void addMessageDef(MessageContract contract);
 
-    ByteBuffer encode(MessageDef messageDef, Message message);
+    void encode(ByteBuffer byteBuffer, MessageDef messageDef, Message message);
 
     Message decode(ByteBuffer buffer);
 

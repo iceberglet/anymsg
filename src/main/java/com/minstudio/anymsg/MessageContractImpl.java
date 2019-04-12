@@ -1,12 +1,11 @@
-package com.minstudio.anymsg.impl;
+package com.minstudio.anymsg;
 
-import static com.minstudio.anymsg.impl.Constants.END_OF_MESSAGE;
+import static com.minstudio.anymsg.Constants.END_OF_MESSAGE;
 
 import java.nio.ByteBuffer;
 import java.util.Collection;
 import java.util.List;
 
-import com.minstudio.anymsg.Message;
 import com.minstudio.anymsg.bootstrap.MessageContract;
 import com.minstudio.anymsg.defs.FieldDef;
 import com.minstudio.anymsg.defs.MessageDef;
@@ -28,20 +27,20 @@ import com.minstudio.anymsg.exceptions.CodecException;
  * - Different, but the item is marked as optional, then decode
  * - Different, and it is not optional, then throw an error saying some field is missing
  */
-public class MessageContractImpl implements MessageContract {
+class MessageContractImpl implements MessageContract {
 
     private final List<FieldDef> fieldDefs;
     private final List<MessageContract> subMsgContracts;
     private final MessageDef myMessageDef;
 
-    public MessageContractImpl(List<FieldDef> fieldDefs, List<MessageContract> subMsgContracts, MessageDef myMessageDef) {
+    MessageContractImpl(List<FieldDef> fieldDefs, List<MessageContract> subMsgContracts, MessageDef myMessageDef) {
         this.fieldDefs = fieldDefs;
         this.subMsgContracts = subMsgContracts;
         this.myMessageDef = myMessageDef;
     }
 
     @Override
-    public MessageDef getGroupDef() {
+    public MessageDef getMessageDef() {
         return myMessageDef;
     }
 
@@ -63,7 +62,7 @@ public class MessageContractImpl implements MessageContract {
 
         //keep reading next group
         for (MessageContract contract : subMsgContracts) {
-            MessageDef messageDef = contract.getGroupDef();
+            MessageDef messageDef = contract.getMessageDef();
             if (messageDef == null) {
                 throw new CodecException("Invalid Message Contract with no MessageDef: " + contract, message);
             }
@@ -112,7 +111,7 @@ public class MessageContractImpl implements MessageContract {
         } else {
             //do encoding
             buffer.putInt(fieldDef.getTag());
-            if (!fieldDef.getFieldType().isAssignableFrom(toEncode.getClass())) {
+            if (!fieldDef.getType().isAssignableFrom(toEncode.getClass())) {
                 throw new CodecException("Field Type Mismatch: Field: " + fieldDef + " Type obtained: " + toEncode.getClass(), message);
             }
             fieldDef.encode(buffer, toEncode);
@@ -120,7 +119,7 @@ public class MessageContractImpl implements MessageContract {
     }
 
     private void encodeGroups(ByteBuffer buffer, MessageContract contract, Message message) {
-        MessageDef messageDef = contract.getGroupDef();
+        MessageDef messageDef = contract.getMessageDef();
         if (messageDef == null) {
             throw new CodecException("Invalid Message Contract with no MessageDef: " + contract, message);
         }

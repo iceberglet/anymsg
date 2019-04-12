@@ -26,8 +26,8 @@ public interface MessageContract {
     void encode(ByteBuffer buffer, Message message);
 
     /**
-     * Returns the group def of this contract, if it about a sub message
-     * @return the group def
+     * Returns the message def of this contract, or group def if this is a sub message
+     * @return the message def
      */
-    MessageDef getGroupDef();
+    MessageDef getMessageDef();
 }
