@@ -24,15 +24,14 @@ class MessageContractBuilderImpl implements MessageContractBuilder {
     private final Set<Integer> addedTags;
     private final Set<String> addedNames;
 
-
     MessageContractBuilderImpl(MessageContractBuilder parent,
-                                      MessageDef myMessageDef) {
+                               MessageDef myMessageDef) {
         this(parent, myMessageDef, 0);
     }
 
     private MessageContractBuilderImpl(MessageContractBuilder parent,
-                               MessageDef myMessageDef,
-                               int layer) {
+                                       MessageDef myMessageDef,
+                                       int layer) {
         this.parent = parent;
         this.fieldDefs = new ArrayList<>();
         this.subMsgContracts = new HashSet<>();
@@ -81,10 +80,10 @@ class MessageContractBuilderImpl implements MessageContractBuilder {
     }
 
     private void checkForDuplicate(BaseDef baseDef) {
-        if(!addedNames.add(baseDef.getName())) {
+        if (!addedNames.add(baseDef.getName())) {
             throw new DefinitionException("Field/Group Name Already Defined in Message: " + baseDef);
         }
-        if(!addedTags.add(baseDef.getTag())) {
+        if (!addedTags.add(baseDef.getTag())) {
             throw new DefinitionException("Field/Group Tag Already Defined in Message: " + baseDef);
         }
     }

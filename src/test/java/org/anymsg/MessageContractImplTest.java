@@ -289,9 +289,9 @@ public class MessageContractImplTest {
         contract.encode(buffer, before);
         buffer.flip();
         if(overridingDecodeContract != null) {
-            return overridingDecodeContract.decode(buffer);
+            return overridingDecodeContract.decode(buffer, MessageImpl::new);
         } else {
-            return contract.decode(buffer);
+            return contract.decode(buffer, MessageImpl::new);
         }
     }
 }

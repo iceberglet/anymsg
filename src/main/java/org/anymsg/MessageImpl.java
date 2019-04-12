@@ -39,7 +39,18 @@ class MessageImpl implements Message {
     }
 
     @Override
-    public String convertToString() {
+    public boolean isTagPresent(int tag) {
+        return fields.containsKey(tag) || groups.containsKey(tag);
+    }
+
+    @Override
+    public void clear() {
+        this.fields.clear();
+        this.groups.clear();
+    }
+
+    @Override
+    public String formatToString() {
         StringBuilder builder = new StringBuilder();
         for(Map.Entry<Integer, Object> field : fields.entrySet()) {
             builder.append(field.getKey());
@@ -52,7 +63,7 @@ class MessageImpl implements Message {
             builder.append(group.getKey());
             builder.append("=[");
             for(Message subMessage : group.getValue()) {
-                builder.append(subMessage.convertToString());
+                builder.append(subMessage.formatToString());
                 builder.append(",");
             }
             builder.append("]|");

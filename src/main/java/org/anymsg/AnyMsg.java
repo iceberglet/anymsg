@@ -3,6 +3,7 @@ package org.anymsg;
 import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import org.anymsg.bootstrap.MessageContract;
 import org.anymsg.bootstrap.MessageContractBuilder;
@@ -11,7 +12,13 @@ import org.anymsg.exceptions.DefinitionException;
 
 public class AnyMsg implements MessageContractRepo {
 
-    private Map<Integer, MessageContract> defs = new HashMap<>();
+    private final Map<Integer, MessageContract> defs = new HashMap<>();
+
+    private final Supplier<Message> messageSupplier;
+
+    public AnyMsg(Supplier<Message> messageSupplier) {
+        this.messageSupplier = messageSupplier;
+    }
 
     @Override
     public MessageContractBuilder defineMessage(MessageDef messageDef) {
@@ -35,6 +42,6 @@ public class AnyMsg implements MessageContractRepo {
     @Override
     public Message decode(ByteBuffer buffer) {
         int messageType = buffer.getInt();
-        return defs.get(messageType).decode(buffer);
+        return defs.get(messageType).decode(buffer, messageSupplier);
     }
 }

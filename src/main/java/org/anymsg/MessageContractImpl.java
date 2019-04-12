@@ -5,6 +5,7 @@ import static org.anymsg.Constants.END_OF_MESSAGE;
 import java.nio.ByteBuffer;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Supplier;
 
 import org.anymsg.defs.FieldDef;
 import org.anymsg.defs.MessageDef;
@@ -33,7 +34,9 @@ class MessageContractImpl implements MessageContract {
     private final List<MessageContract> subMsgContracts;
     private final MessageDef myMessageDef;
 
-    MessageContractImpl(List<FieldDef> fieldDefs, List<MessageContract> subMsgContracts, MessageDef myMessageDef) {
+    MessageContractImpl(List<FieldDef> fieldDefs,
+                        List<MessageContract> subMsgContracts,
+                        MessageDef myMessageDef) {
         this.fieldDefs = fieldDefs;
         this.subMsgContracts = subMsgContracts;
         this.myMessageDef = myMessageDef;
@@ -45,8 +48,8 @@ class MessageContractImpl implements MessageContract {
     }
 
     @Override
-    public Message decode(ByteBuffer buffer) {
-        Message message = new MessageImpl();
+    public Message decode(ByteBuffer buffer, Supplier<Message> supplier) {
+        Message message = supplier.get();
 
         //next tag is read forward iff the current one is satisfied.
         //exception is thrown if the current tag cannot be satisfied.
@@ -69,7 +72,7 @@ class MessageContractImpl implements MessageContract {
             //now nextTag is supposed to be a group tag.
             Collection<Message> subMessages = message.getGroup(messageDef);
             while(nextTag == messageDef.getTag()) {
-                subMessages.add(contract.decode(buffer));
+                subMessages.add(contract.decode(buffer, supplier));
                 nextTag = buffer.getInt();
             }
             if (subMessages.isEmpty() && !messageDef.isOptional()) {
@@ -103,13 +106,13 @@ class MessageContractImpl implements MessageContract {
     }
 
     private void encodeField(ByteBuffer buffer, FieldDef fieldDef, Message message) {
-        Object toEncode = message.getField(fieldDef);
-        if (toEncode == null) {
+        if (!message.isTagPresent(fieldDef.getTag())) {
             if (!fieldDef.isOptional()) {
                 throw new CodecException("Missing Field In Message: " + fieldDef, message);
             }
         } else {
             //do encoding
+            Object toEncode = message.getField(fieldDef);
             buffer.putInt(fieldDef.getTag());
             if (!fieldDef.getType().isAssignableFrom(toEncode.getClass())) {
                 throw new CodecException("Field Type Mismatch: Field: " + fieldDef + " Type obtained: " + toEncode.getClass(), message);
@@ -122,6 +125,11 @@ class MessageContractImpl implements MessageContract {
         MessageDef messageDef = contract.getMessageDef();
         if (messageDef == null) {
             throw new CodecException("Invalid Message Contract with no MessageDef: " + contract, message);
+        }
+        if (!message.isTagPresent(messageDef.getTag())) {
+            if (!messageDef.isOptional()) {
+                throw new CodecException("Missing Group In Message: " + messageDef, message);
+            }
         }
         Collection<Message> subMessages = message.getGroup(messageDef);
         for (Message subMsg : subMessages) {
