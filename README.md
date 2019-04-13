@@ -31,6 +31,16 @@ Criteria explanation:
 
 ### Getting Started
 
+#### Dependency setup (Maven Central)
+
+```xml
+    <dependency>
+        <groupId>com.github.iceberglet</groupId>
+        <artifactId>anymsg</artifactId>
+        <version>1.0</version>
+    </dependency>
+```
+
 #### Define your message contracts
 
 Before you do any serialization, you need to define your message contracts. Each
@@ -61,6 +71,9 @@ Define the message schema / contract
     anyMsg.addMessageDef(clientOrder);
     
 ```
+
+#### Encoding and Decoding
+
 Then, you need to use the `AnyMsg` instance to encode your message.
 ```java 
     ByteBuffer buffer = ByteBuffer.allocate(1024);
