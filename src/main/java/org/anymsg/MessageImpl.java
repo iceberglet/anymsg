@@ -8,7 +8,7 @@ import java.util.Map;
 import org.anymsg.defs.FieldDef;
 import org.anymsg.defs.MessageDef;
 
-class MessageImpl implements Message {
+public class MessageImpl implements Message {
 
     private final Map<Integer, Object> fields;
     private final Map<Integer, Collection<Message>> groups;
