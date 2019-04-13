@@ -36,6 +36,20 @@ Criteria explanation:
 Before you do any serialization, you need to define your message contracts. Each
 type of message needs its own contract.
 
+Define the fields. The fields define the tag number and the name (which must be
+unique in any message!) as well as whether it must be present, and how to encode/decode
+it. Normally these definitions can be static and do not carry any mutable runtime
+information, but developers are free to choose to implement them in any way
+they like.
+```java
+    private static final MessageDef CLIENT_ORDER = new MessageDef("CLIENT_ORDER", 0, false);
+    private static final StringDef CLIENT_ORDER_ID = new StringDef("Client Order ID", 1, false);
+    private static final IntegerDef ORDER_QTY = new IntegerDef("Order Quantity", 2, false);
+    private static final DoubleDef ORDER_PRICE = new DoubleDef("Order Price", 3, false);
+    private static final StringDef PRODUCT_ID = new StringDef("Product ID", 4, false);
+```
+
+Define the message schema / contract
 ```java
     AnyMsg anyMsg = new AnyMsg(MessageImpl::new);
     MessageContract clientOrder = anyMsg.defineMessage(CLIENT_ORDER)
