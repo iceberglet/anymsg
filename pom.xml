@@ -4,7 +4,7 @@
 
     <groupId>com.github.iceberglet</groupId>
     <artifactId>anymsg</artifactId>
-    <version>1.0</version>
+    <version>1.1-SNAPSHOT</version>
 
     <name>AnyMsg</name>
     <description>Fast, Performant, Typesafe and Accessible Java Object Serialization Library</description>
@@ -22,7 +22,7 @@
         <connection>scm:git:git@github.com:iceberglet/anymsg.git</connection>
         <developerConnection>scm:git:git@github.com:iceberglet/anymsg.git</developerConnection>
         <url>https://github.com/iceberglet/anymsg</url>
-        <tag>anymsg-1.0</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <distributionManagement>
